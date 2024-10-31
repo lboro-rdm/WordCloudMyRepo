@@ -1,19 +1,24 @@
 options(encoding = "UTF-8")
 
+keyword = "autumn"
+
 # Set your Figshare API key
 api_key <- Sys.getenv("API_KEY")
 
-# Set the Figshare API request URL
-endpoint1 <- "https://api.figshare.com/v2/articles?institution=2&&page_size=1000&search_for=:title:"
+# Set up the base URL and query parameters
+base_url <- "https://api.figshare.com/v2/articles"
 
-# Test code
-url <- paste0(endpoint1, '"sport"')
+query_params <- list(
+  institution = 2,
+  page_size = 1000,
+  search_for = keyword
+)
 
-# Create the URL by appending the keyword
-#url <- paste0(endpoint1, URLencode(input$keyword))
-
-# Fetch the data from the URL
-response <- GET(url, add_headers(Authorization = paste("token", api_key)))
+response <- GET(
+  url = base_url,
+  query = query_params,
+  add_headers(Authorization = paste("token", api_key))
+)
 
 # Try fetching the response content
 data <- rawToChar(response$content)

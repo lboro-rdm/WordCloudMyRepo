@@ -15,16 +15,27 @@ server <- function(input, output, session) {
   
   # Reactive expression to handle search
   observeEvent(input$search, {
+    print("search button clicked")
     req(input$keyword)
+    print(input$keyword)
     
     options(encoding = "UTF-8")
     api_key <- Sys.getenv("API_KEY")
     
-    endpoint1 <- "https://api.figshare.com/v2/articles?institution=2&&page_size=1000&search_for=:title:"
-    url <- paste0(endpoint1, URLencode(input$keyword))
+    # Set up the base URL and query parameters
+    base_url <- "https://api.figshare.com/v2/articles"
     
-    # Fetch the data from the URL
-    response <- GET(url, add_headers(Authorization = paste("token", api_key)))
+    query_params <- list(
+      institution = 2,
+      page_size = 1000,
+      search_for = input$keyword
+    )
+    
+    response <- GET(
+      url = base_url,
+      query = query_params,
+      add_headers(Authorization = paste("token", api_key))
+    )
     
     # Try fetching the response content
     data <- rawToChar(response$content)
@@ -79,6 +90,9 @@ server <- function(input, output, session) {
         return(NULL)
       }
       
+      # Remove plot margins to fit the word cloud within the available area
+      par(mai = c(0, 0, 0, 0))
+      
       # Create a word cloud using the selected colours
       wordcloud(
         names(word_freq),
@@ -87,7 +101,7 @@ server <- function(input, output, session) {
         max.words = 100,
         colors = c(input$colour1, input$colour2),  # Use selected colours
         rot.per = 0,
-        fixed.asp = TRUE,
+        fixed.asp = FALSE,
         random.order = FALSE
       )
     })
