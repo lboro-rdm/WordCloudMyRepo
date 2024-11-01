@@ -103,3 +103,8 @@ output$downloadData <- downloadHandler(
   }
 )
 
+library(magick)
+img <- image_read("www/lottery_logo_black_rgb.jpg")
+print(img)
+
+print(www/lottery_logo_black_rgb.jpg)

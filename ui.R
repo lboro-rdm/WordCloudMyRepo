@@ -1,6 +1,7 @@
 library(shiny)
 library(shinycssloaders)  # For the spinner
 library(colourpicker)
+library(magick)
 
 # Define UI for application
 ui <- navbarPage(
@@ -17,8 +18,8 @@ ui <- navbarPage(
              p("To cite this app:"),
              p("Skelly, Lara (2024). Word Cloud the Repository. Loughborough University. Online resource. ", 
                a("https://doi.org/10.17028/rd.lboro.27380634", href = "https://doi.org/10.17028/rd.lboro.27380634", target = "_blank")),
-             # Add the image at the end
-             tags$img(src = "www/lottery_Logo_Black RGB.jpg", width = "200px", alt = "Lottery Logo")
+             tags$img(src = "nonexistent_image.jpg", alt = "Dummy Image"),
+             tags$img(src = "logo.png", alt = "Lottery Logo")
            )
   ),
   
