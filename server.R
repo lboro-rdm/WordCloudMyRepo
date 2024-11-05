@@ -9,15 +9,13 @@ library(colourpicker)
 # Define server logic
 server <- function(input, output, session) {
   
-  # Reactive expression to fetch repository data based on keyword
+  # Initialize reactive values
   repo_data <- reactiveVal(data.frame(titles = character(), stringsAsFactors = FALSE))
-  combined_df <- reactiveVal(data.frame(Citation = character(), URL = character(), stringsAsFactors = FALSE))  # Store citations
+  combined_df <- reactiveVal(data.frame(Citation = character(), URL = character(), stringsAsFactors = FALSE))
   
   # Reactive expression to handle search
   observeEvent(input$search, {
-    print("search button clicked")
     req(input$keyword)
-    print(input$keyword)
     
     options(encoding = "UTF-8")
     api_key <- Sys.getenv("API_KEY")
@@ -38,27 +36,19 @@ server <- function(input, output, session) {
     )
     
     # Try fetching the response content
-    data <- rawToChar(response$content)
+    data <- fromJSON(rawToChar(response$content), flatten = TRUE)
     
-    # Parse JSON
-    data <- fromJSON(data)
-    
-    # Check if titles are available
     # Check if titles are available
     if (is.null(data$title) || length(data$title) == 0) {
       output$wordcloud <- renderUI({
         tags$div(
           style = "text-align: center;",  # Center the content
-          tags$img("sad_face.png", width = 120, height = 100),
+          tags$img(src = "www/sad_face.png", width = 120, height = 100),
           tags$p("No search results found for the selected keyword.")
         )
       })
       return(NULL)  # Early exit
     }
-      
-      repo_data(data.frame(titles = character(), stringsAsFactors = FALSE))  # Reset data
-      combined_df(data.frame(Citation = character(), URL = character(), stringsAsFactors = FALSE))  # Reset citations
-
     
     # Extract titles
     titles <- data$title
@@ -109,23 +99,22 @@ server <- function(input, output, session) {
     # Get article IDs for citations
     article_ids <- data$id
     endpoint2 <- "https://api.figshare.com/v2/articles/"
-    combined_df(data.frame(Citation = character(), URL = character(), stringsAsFactors = FALSE))  # Reset combined_df
     
-    # Use article IDs to get article citations
-    for (article_id in article_ids) {
+    # Build citation data
+    citation_list <- lapply(article_ids, function(article_id) {
       full_url_citation <- paste0(endpoint2, article_id)
       response <- GET(full_url_citation)
       
-      # Check for successful response
       if (http_status(response)$category == "Success") {
         citation_data <- fromJSON(rawToChar(response$content), flatten = TRUE)
-        citation_df <- data.frame(Citation = citation_data$citation, URL = citation_data$figshare_url, stringsAsFactors = FALSE)
-        combined_df(rbind(combined_df(), citation_df))  # Combine citations
+        data.frame(Citation = citation_data$citation, URL = citation_data$figshare_url, stringsAsFactors = FALSE)
+      } else {
+        NULL
       }
-    }
+    })
     
-    # Save combined_df to CSV
-    write.csv(combined_df(), "combined_citations.csv", row.names = FALSE)
+    # Combine all citation data
+    combined_df(do.call(rbind, citation_list))
     
   })
   
