@@ -46,7 +46,7 @@ Sys.setenv(
 MIT licence
 
 ## Acknowledgements
-Please see the Reference tab within the app.
+Please see the Acknowledgements tab within the app.
 
 ## Cite this app:
 Skelly, Lara (2024). Word Cloud the Repository. Loughborough University. Online resource. https://doi.org/10.17028/rd.lboro.27380634
