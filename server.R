@@ -16,6 +16,7 @@ server <- function(input, output, session) {
   # Reactive expression to handle search
   observeEvent(input$search, {
     req(input$keyword)
+    print(input$keyword)
     
     options(encoding = "UTF-8")
     api_key <- Sys.getenv("API_KEY")

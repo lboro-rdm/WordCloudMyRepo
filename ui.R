@@ -5,34 +5,25 @@ library(colourpicker)
 # Define UI for application
 ui <- navbarPage(
   title = "Word Cloud the Repository",
-  
-  tabPanel("Welcome",
+
+  tabPanel("Make a Word Cloud",
            fluidPage(
-             titlePanel("Welcome to the Word Cloud App"),
-             h4("This application allows you to create a word cloud from articles in the Loughborough University Research Repository."),
-             p("This app has been created and maintained by Lara Skelly for Loughborough University."),
-             p(),
-             p("The code can be found on ", a("GitHub", href = "https://github.com/lboro-rdm/WordCloudMyRepo.git", target = "_blank")),
-             p(),
-             p("To cite this app:"),
-             p("Skelly, Lara (2024). Word Cloud the Repository. Loughborough University. Online resource. ", 
-               a("https://doi.org/10.17028/rd.lboro.27380634", href = "https://doi.org/10.17028/rd.lboro.27380634", target = "_blank")),
-             tags$img(src = "logo.png", width = "300px")  # Adjust width as needed
-           )
-  ),
-  
-  tabPanel("App",
+             h4("Make a word cloud from items in the ", a("Loughborough University Research Repository", href = "https://repository.lboro.ac.uk")),
+             p("Enter a keyword (or keywords in inverted commas) to search for articles, and visualize the most frequent words as a word cloud."),
+             p("Use the 'Search' button to fetch data and the 'Download' button to get the citations in CSV format."),
+           ),
            sidebarLayout(
              sidebarPanel(
-               p("Enter a keyword (or keywords in inverted commas) to search for articles, and visualize the most frequent words as a word cloud."),
-               p("Use the 'Search' button to fetch data and the 'Download' button to get the citations in CSV format."),
+
                p("Click on search to get going; be patient, our servers are slow :)"),
-               textInput("keyword", "Enter a keyword:", value = "November"),
-               colourInput("colour1", "Choose first colour", value = "red"),  # Colour 1 input
-               colourInput("colour2", "Choose second colour", value = "brown"),  # Colour 2 input
+               textInput("keyword", "Enter a keyword:", value = '"Open Research"'),
+               colourInput("colour1", "Choose first colour", value = "darkblue"),  # Colour 1 input
+               colourInput("colour2", "Choose second colour", value = "blue"),  # Colour 2 input
                actionButton("search", "Search"),
                p(),
-               downloadButton("downloadData", "Download Citations as CSV")
+               downloadButton("downloadData", "Download Citations as CSV"),
+               p(),
+               p("Note that if the word frequency isn't varied enough, only one colour will show.")
              ),
              
              mainPanel(
@@ -40,8 +31,14 @@ ui <- navbarPage(
              )
            )
   ),
-  tabPanel("References",
+  tabPanel("Acknowledgements",
            fluidPage(
+             p("This app has been created and maintained by Lara Skelly for Loughborough University. The code can be found on ", a("GitHub", href = "https://github.com/lboro-rdm/WordCloudMyRepo.git", target = "_blank")),
+             p(),
+             p("To cite this app:"),
+             p("Skelly, Lara (2024). Word Cloud the Repository. Loughborough University. Online resource. ", 
+               a("https://doi.org/10.17028/rd.lboro.27380634", href = "https://doi.org/10.17028/rd.lboro.27380634", target = "_blank")),
+             p(),
              p("Throughout the creation of this Shiny app, ChatGPT acted as a conversation partner and a code checker."),
              p(),
              tags$p("The following packages were used in this code:"),
@@ -62,11 +59,12 @@ ui <- navbarPage(
                tags$li(a("wordcloud", href = "https://blog.fellstat.com/?cat=11"))
              ),
              p(),
-             p("This app was funded by the ", a("Arts Council England Develop Your Creative Practice Grant", href = "https://www.artscouncil.org.uk/dycp"))
-             
+             p("This app was funded by the ", a("Arts Council England Develop Your Creative Practice Grant", href = "https://www.artscouncil.org.uk/dycp")),
+             tags$img(src = "logo.png", width = "300px")  # Adjust width as needed
+           )
 
            )
            
            )
-)
+
 
