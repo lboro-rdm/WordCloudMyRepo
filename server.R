@@ -13,6 +13,16 @@ server <- function(input, output, session) {
   repo_data <- reactiveVal(data.frame(titles = character(), stringsAsFactors = FALSE))
   combined_df <- reactiveVal(data.frame(Citation = character(), URL = character(), stringsAsFactors = FALSE))
   
+  # Reactive expression to check if there are results
+  hasResults <- reactive({
+    req(repo_data())
+    nrow(repo_data()) > 0
+  })
+  
+  # Register `hasResults` as an output variable for conditionalPanel
+  output$hasResults <- reactive({ hasResults() })
+  outputOptions(output, "hasResults", suspendWhenHidden = FALSE)
+  
   # Reactive expression to handle search
   observeEvent(input$search, {
     req(input$keyword)
@@ -41,13 +51,10 @@ server <- function(input, output, session) {
     
     # Check if titles are available
     if (is.null(data$title) || length(data$title) == 0) {
-      output$wordcloud <- renderUI({
-        tags$div(
-          style = "text-align: center;",  # Center the content
-          tags$img(src = "www/sad_face.png", width = 120, height = 100),
-          tags$p("No search results found for the selected keyword.")
-        )
-      })
+      # If no results, clear repo_data, clear the word cloud, and show error message
+      repo_data(data.frame(titles = character(), stringsAsFactors = FALSE))
+      output$wordcloud <- NULL  # Clear previous plot
+      output$errorMessage <- renderText("No search results found for the selected keyword.")
       return(NULL)  # Early exit
     }
     

@@ -16,7 +16,7 @@ ui <- navbarPage(
              sidebarPanel(
 
                p("Click on search to get going; be patient, our servers are slow :)"),
-               textInput("keyword", "Enter a keyword:", value = '"Open Research"'),
+               textInput("keyword", "Enter a keyword:"),
                colourInput("colour1", "Choose first colour", value = "darkblue"),  # Colour 1 input
                colourInput("colour2", "Choose second colour", value = "blue"),  # Colour 2 input
                actionButton("search", "Search"),
@@ -27,8 +27,19 @@ ui <- navbarPage(
              ),
              
              mainPanel(
-                 withSpinner(plotOutput("wordcloud", width = "100%", height = "400px")) 
+               # Show spinner and plot only if there are results
+               conditionalPanel(
+                 condition = "output.hasResults",
+                 withSpinner(plotOutput("wordcloud", width = "100%", height = "400px"))
+               ),
+               
+               # Show error message only if there are no results
+               conditionalPanel(
+                 condition = "!output.hasResults",
+                 span(textOutput("errorMessage"), style="color:blue")
+               )
              )
+             
            )
   ),
   tabPanel("Acknowledgements",
