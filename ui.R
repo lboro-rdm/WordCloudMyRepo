@@ -47,7 +47,7 @@ ui <- navbarPage(
              p("This app has been created and maintained by Lara Skelly for Loughborough University. The code can be found on ", a("GitHub", href = "https://github.com/lboro-rdm/WordCloudMyRepo.git", target = "_blank")),
              p(),
              p("To cite this app:"),
-             p("Skelly, Lara (2024). Word Cloud the Repository. Loughborough University. Online resource. ", 
+             p("Skelly, Lara (2024). Word Cloud the Repository: a R/Shiny app that creates word clouds based on a search from the Loughborough University Research Repository. Loughborough University. Online resource. ", 
                a("https://doi.org/10.17028/rd.lboro.27380634", href = "https://doi.org/10.17028/rd.lboro.27380634", target = "_blank")),
              p(),
              p("Throughout the creation of this Shiny app, ChatGPT acted as a conversation partner and a code checker."),
