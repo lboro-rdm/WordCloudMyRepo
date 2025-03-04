@@ -26,7 +26,7 @@ ui <- tags$html(lang = "en",
                                  
                                  p("Click on search to get going; be patient, our servers are slow :)"),
                                  textInput("keyword", "Enter a keyword:"),
-                                 colourInput("colour1", "Choose first colour", value = "#ff8c00"),  # Colour 1 input
+                                 colourInput("colour1", "Choose first colour", value = "#cc6b00"),  # Colour 1 input
                                  colourInput("colour2", "Choose second colour", value = "#ffb74d"),  # Colour 2 input
                                  actionButton("search", "Search"),
                                  p(),

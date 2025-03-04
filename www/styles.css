@@ -1,3 +1,13 @@
+/* Basic colour pallet */
+  /* Greens */
+    /* Very Dark: #3e4707 */
+    /* Dark:  #5a650a */
+    /* Medium: #6f7e0d */
+    /* Light:  #8c9c12 */
+  /* Oranges */
+    /* Warm Orange: #ff8c00 */
+    /* Soft Peach: #ffb74d */
+
 /* Ensure navbar title does not appear as a hyperlink */
 .navbar-brand {
     pointer-events: none;  /* Disables click behavior */
