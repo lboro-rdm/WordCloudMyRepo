@@ -1,11 +1,3 @@
-library(shiny)
-library(httr)
-library(jsonlite)
-library(dplyr)
-library(tm)
-library(wordcloud)
-library(colourpicker)
-
 # Define server logic
 server <- function(input, output, session) {
   
@@ -25,6 +17,16 @@ server <- function(input, output, session) {
   
   # Reactive expression to handle search
   observeEvent(input$search, {
+    # Check if the keyword input is empty
+    if (input$keyword == "") {
+      # Show error message if no keyword is entered
+      output$errorMessage <- renderText({
+        "Please enter a keyword to search."
+      })
+      repo_data(data.frame(titles = character(), stringsAsFactors = FALSE))  # Clear previous data
+      return()  # Early exit
+    }
+    
     req(input$keyword)
     print(input$keyword)
     
@@ -54,7 +56,9 @@ server <- function(input, output, session) {
       # If no results, clear repo_data, clear the word cloud, and show error message
       repo_data(data.frame(titles = character(), stringsAsFactors = FALSE))
       output$wordcloud <- NULL  # Clear previous plot
-      output$errorMessage <- renderText("No search results found for the selected keyword.")
+      output$errorMessage <- renderText({
+        "No search results found for the selected keyword."
+      })
       return(NULL)  # Early exit
     }
     
@@ -62,7 +66,9 @@ server <- function(input, output, session) {
     titles <- data$title
     repo_data(data.frame(titles = titles, stringsAsFactors = FALSE))  # Create dataframe
     
-    output$errorMessage <- renderText("")  # Clear previous messages
+    output$errorMessage <- renderText({  # Clear previous messages
+      ""
+    })
     
     # Generate word cloud
     output$wordcloud <- renderPlot({
@@ -82,14 +88,9 @@ server <- function(input, output, session) {
       
       # Check if word_freq is valid (i.e., has data)
       if (length(word_freq) == 0) {
-        output$wordcloud <- renderUI({
-          tags$p("No valid words available to generate the word cloud.")
-        })
+        output$wordcloud <- NULL  # Clear the plot
         return(NULL)
       }
-      
-      # Remove plot margins to fit the word cloud within the available area
-      par(mai = c(0, 0, 0, 0))
       
       # Create a word cloud using the selected colours
       wordcloud(
@@ -97,7 +98,7 @@ server <- function(input, output, session) {
         word_freq,
         min.freq = 3,
         max.words = 100,
-        colors = c(input$colour1, input$colour2),  # Use selected colours
+        colors = c(input$colour1, input$colour2),
         rot.per = 0,
         fixed.asp = FALSE,
         random.order = FALSE
@@ -123,18 +124,15 @@ server <- function(input, output, session) {
     
     # Combine all citation data
     combined_df(do.call(rbind, citation_list))
-    
   })
   
-  # Download handler for citations
+  # Define download handler for the download button
   output$downloadData <- downloadHandler(
     filename = function() {
-      paste("citations_", Sys.Date(), ".csv", sep = "")  # Set filename with date
+      paste("citations_", Sys.Date(), ".csv", sep = "")
     },
     content = function(file) {
-      write.csv(combined_df(), file, row.names = FALSE)  # Write combined_df to CSV
+      write.csv(combined_df(), file, row.names = FALSE)
     }
   )
 }
-
-shinyServer(server)

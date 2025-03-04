@@ -1,0 +1,76 @@
+/* Ensure navbar title does not appear as a hyperlink */
+.navbar-brand {
+    pointer-events: none;  /* Disables click behavior */
+    text-decoration: none !important;  /* Removes hyperlink styling */
+    color: #ffffff !important;  /* Ensures text color remains readable */
+    cursor: default;  /* Changes cursor back to normal */
+    font-weight: bold;
+    background: transparent !important;
+    padding: 10px 15px; /* Adjust spacing */
+}
+
+/* Change navbar background color and text color */
+.navbar-default {
+    background-color: #6f7e0d !important; /* New background color */
+    border-color: #5a650a; /* Slightly darker border */
+}
+
+/* Change the text color in the navbar */
+.navbar-default .navbar-brand,
+.navbar-default .navbar-nav > li > a {
+    color: #ffffff !important; /* White text for better contrast */
+    font-weight: bold;
+}
+
+/* Change navbar hover effects */
+.navbar-default .navbar-nav > li > a:hover {
+    color: #8c9c12 !important; /* Yellow hover text */
+    background-color: #5a650a !important; /* Slightly darker background */
+}
+
+/* Change active tab color */
+.navbar-default .navbar-nav > .active > a,
+.navbar-default .navbar-nav > .active > a:focus,
+.navbar-default .navbar-nav > .active > a:hover {
+    background-color: #8c9c12 !important; /* Highlight active tab */
+    color: #000 !important; /* Dark text for readability */
+    font-weight: bold;
+}
+
+/* Ensure good contrast for main content */
+body {
+    background-color: #f8f9fa; /* Light grey background */
+    color: #333333; /* Darker text for readability */
+}
+
+/* Footer styling */
+.footer {
+    background-color: #6f7e0d !important; /* New footer background color */
+    color: #ffffff !important;
+    padding: 10px;
+    margin-top: 30px;
+    text-align: center;
+}
+
+/* Ensure links are readable */
+a {
+    color: #5a650a !important; /* Use a brighter orange */
+    text-decoration: none;
+}
+
+a:hover {
+    color: #3e4707 !important; /* Darker shade on hover */
+    text-decoration: underline;
+}
+
+/* Style for h1 headers */
+h1 {
+    color: #222222;
+    font-size: 2em;
+    font-weight: bold;
+}
+
+/* Right-align signature in artist statement */
+.text-right {
+    text-align: right;
+}
