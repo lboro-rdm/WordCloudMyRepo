@@ -34,14 +34,6 @@ How to install and run the app:
    R
    shiny::runApp()
    
-### Code for the global.R file
-
-Sys.setenv( 
-  
-  API_KEY = "YOUR API KEY" 
-  
-) 
-
 ## Licence
 MIT licence
 
@@ -49,4 +41,4 @@ MIT licence
 Please see the Acknowledgements tab within the app.
 
 ## Cite this app:
-Skelly, Lara (2024). Word Cloud the Repository: a R/Shiny app that creates word clouds based on a search from the Loughborough University Research Repository. Loughborough University. Online resource. https://doi.org/10.17028/rd.lboro.27380634.v1
+Skelly, Lara (2024). Word Cloud the Repository: a R/Shiny app that creates word clouds based on a search from the Loughborough University Research Repository. Loughborough University. Online resource. https://doi.org/10.17028/rd.lboro.27380634
