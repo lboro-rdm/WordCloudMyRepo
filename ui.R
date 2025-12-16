@@ -7,11 +7,47 @@ library(dplyr)
 library(tm)
 library(wordcloud)
 
-ui <- tags$html(lang = "en",
-                fluidPage(
-                  tags$head(
-                    tags$link(rel = "stylesheet", type = "text/css", href = "styles.css")
-                  ),
+ui <- tags$html(
+  lang = "en",
+  fluidPage(
+    style = "padding: 0px; margin: 0px;",
+    tags$head(
+      tags$title("WordCloud My Repo"),
+      tags$link(rel = "stylesheet", type = "text/css", href = "styles.css")
+    ),
+    
+    # Black banner
+    tags$div(
+      class = "black-banner",
+      tags$div(
+        class = "banner-content",
+        tags$a(
+          href = "https://www.lboro.ac.uk",
+          target = "_blank",
+          tags$img(src = "logo.png", class = "uni-logo", alt = "University Logo")
+        ),
+        tags$a(
+          href = "https://www.lboro.ac.uk/services/library/",
+          target = "_blank",
+          class = "return-link",
+          "University Library"
+        )
+      )
+    ),
+    
+    # Blue banner
+    tags$div(
+      class = "blue-banner",
+      tags$div(
+        class = "banner-content",
+        tags$span("Open Research Services"),
+        tags$a(
+          href = "https://repository.lboro.ac.uk/",
+          class = "return-link",
+          "< Return to Research Repository"
+        )
+      )
+    ),
                   
                   navbarPage(
                     title = "Word Cloud the Repository",
@@ -93,19 +129,19 @@ ui <- tags$html(lang = "en",
                                p("This webapp does not use cookies or store any data on your device."),
                                p(),
                                p("This app was funded by the ", a("Arts Council England Develop Your Creative Practice Grant", href = "https://www.artscouncil.org.uk/dycp")),
-                               tags$img(src = "logo.png", width = "300px", alt = "Arts Council England logo")
+                               tags$img(src = "ACE_logo.png", width = "300px", alt = "Arts Council England logo")
                              )
                     ),
-                    tags$div(class = "footer", 
-                             fluidRow(
-                               column(12, 
-                                      tags$a(href = 'https://doi.org/10.17028/rd.lboro.28525481', 
-                                             "Accessibility Statement",
-                                             style = "color: #ffffff !important; text-decoration: none;")
-                               )
-                             ),
-                             style = "background-color: #333; color: #ffffff !important; padding: 10px; margin-top: 30px; text-align: center;"
+                    # Footer
+                    tags$div(
+                      class = "footer",
+                      fluidRow(
+                        column(12,
+                               tags$a(href = "https://doi.org/10.17028/rd.lboro.28525481",
+                                      "Accessibility Statement")
+                        )
+                      )
                     )
                   )
-                )
+  )
 )
