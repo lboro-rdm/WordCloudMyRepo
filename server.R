@@ -1,4 +1,7 @@
-  # Define server logic
+library(tm)
+library(wordcloud)  
+
+# Define server logic
   server <- function(input, output, session) {
     
     # Initialize reactive values
@@ -40,10 +43,9 @@
         ) %>%
         req_body_json(list(
           search_for = input$keyword,
-          institution = 2,  # your institution ID
-          group = 2,        # include group for scoping
           page = 1,
           page_size = 1000,
+          institution = 2,
           order = "published_date",
           order_direction = "desc"
         ))
@@ -64,9 +66,7 @@
       # Generate wordcloud
       output$wordcloud <- renderPlot({
         titles <- repo_data()$titles
-        library(tm)
-        library(wordcloud)
-        
+
         corpus <- Corpus(VectorSource(titles))
         corpus <- tm_map(corpus, content_transformer(tolower))
         corpus <- tm_map(corpus, removePunctuation)
@@ -76,14 +76,19 @@
         tdm <- TermDocumentMatrix(corpus)
         m <- as.matrix(tdm)
         word_freq <- sort(rowSums(m), decreasing = TRUE)
-        
+
         if (length(word_freq) == 0) return(NULL)
+        
+        n_words <- length(word_freq)
+        scale_max <- max(10, 100 / sqrt(n_words))
+        scale_min <- 0.5
         
         wordcloud(
           names(word_freq),
           word_freq,
           min.freq = 3,
           max.words = 100,
+          scale = c(scale_max, scale_min),
           colors = c(input$colour1, input$colour2),
           rot.per = 0,
           fixed.asp = FALSE,
