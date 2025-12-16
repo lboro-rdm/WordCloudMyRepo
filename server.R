@@ -17,82 +17,68 @@
     
     # Reactive expression to handle search
     observeEvent(input$search, {
-      # Check if the keyword input is empty
+      # Reset previous outputs
+      output$wordcloud <- renderPlot(NULL)
+      output$errorMessage <- renderText("")
+      repo_data(data.frame(titles = character(), stringsAsFactors = FALSE))
+      
+      # Validate keyword
       if (input$keyword == "") {
-        # Show error message if no keyword is entered
-        output$errorMessage <- renderText({
-          "Please enter a keyword to search."
-        })
-        repo_data(data.frame(titles = character(), stringsAsFactors = FALSE))  # Clear previous data
-        return()  # Early exit
+        output$errorMessage <- renderText("Please enter a keyword to search.")
+        return()
       }
       
-      req(input$keyword)
-      print(input$keyword)
-      
-      options(encoding = "UTF-8")
       api_key <- Sys.getenv("API_KEY")
       
-      # Set up the base URL and query parameters
-      base_url <- "https://api.figshare.com/v2/articles"
+      # Build POST request with httr2
+      library(httr2)
       
-      query_params <- list(
-        institution = 2,
-        page_size = 1000,
-        search_for = input$keyword
-      )
+      req <- request("https://api.figshare.com/v2/articles/search") %>%
+        req_headers(
+          Authorization = paste("token", api_key),
+          `Content-Type` = "application/json"
+        ) %>%
+        req_body_json(list(
+          search_for = input$keyword,
+          institution = 2,  # your institution ID
+          group = 2,        # include group for scoping
+          page = 1,
+          page_size = 1000,
+          order = "published_date",
+          order_direction = "desc"
+        ))
       
-      response <- GET(
-        url = base_url,
-        query = query_params,
-        add_headers(Authorization = paste("token", api_key))
-      )
+      resp <- req_perform(req)
+      data <- resp_body_json(resp, simplifyVector = TRUE)
       
-      # Try fetching the response content
-      data <- fromJSON(rawToChar(response$content), flatten = TRUE)
-      
-      # Check if titles are available
-      if (is.null(data$title) || length(data$title) == 0) {
-        # If no results, clear repo_data, clear the word cloud, and show error message
-        repo_data(data.frame(titles = character(), stringsAsFactors = FALSE))
-        output$wordcloud <- NULL  # Clear previous plot
-        output$errorMessage <- renderText({
-          "No search results found for the selected keyword."
-        })
-        return(NULL)  # Early exit
+      # Check for results
+      if (length(data) == 0 || is.null(data$title) || length(data$title) == 0) {
+        output$errorMessage <- renderText("No search results found for the selected keyword.")
+        return()
       }
       
       # Extract titles
       titles <- data$title
-      repo_data(data.frame(titles = titles, stringsAsFactors = FALSE))  # Create dataframe
+      repo_data(data.frame(titles = titles, stringsAsFactors = FALSE))
       
-      output$errorMessage <- renderText({  # Clear previous messages
-        ""
-      })
-      
-      # Generate word cloud
+      # Generate wordcloud
       output$wordcloud <- renderPlot({
         titles <- repo_data()$titles
+        library(tm)
+        library(wordcloud)
         
-        # Create a corpus from titles
         corpus <- Corpus(VectorSource(titles))
         corpus <- tm_map(corpus, content_transformer(tolower))
         corpus <- tm_map(corpus, removePunctuation)
         corpus <- tm_map(corpus, removeNumbers)
         corpus <- tm_map(corpus, removeWords, stopwords("en"))
         
-        # Create term-document matrix
         tdm <- TermDocumentMatrix(corpus)
         m <- as.matrix(tdm)
         word_freq <- sort(rowSums(m), decreasing = TRUE)
         
-        # Check if word_freq is valid (i.e., has data)
-        if (length(word_freq) == 0) {
-          output$wordcloud <- NULL  # Clear the plot
-          return(NULL)
-        }
+        if (length(word_freq) == 0) return(NULL)
         
-        # Create a word cloud using the selected colours
         wordcloud(
           names(word_freq),
           word_freq,
@@ -105,6 +91,7 @@
         )
       })
       
+      # Link to repository
       output$repoLink <- renderUI({
         keyword <- URLencode(input$keyword, reserved = TRUE)
         url <- paste0("https://repository.lboro.ac.uk/search?q=", keyword)
@@ -114,5 +101,5 @@
         )
       })
     })
-    
   }
+    
